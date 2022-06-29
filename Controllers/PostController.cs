@@ -36,19 +36,56 @@ namespace Blog.Controllers
         }
 
         [HttpPost]
-        public string Add(string contents, string title)
+        public IActionResult Add(string contents, string title)
         {
             string date = Date();
             Post post = new Post { Id = AssignId(), Contents = contents, Title = title, Owner = Owner(), 
                 Created_at = date, Modified_at = date };
             _context.Posts.Add(post);
             _context.SaveChanges();
-            if (_context.Posts.ToList() != null)
+            return Created("post/" + post.Id, post);
+        }
+
+        [HttpDelete]
+        public IActionResult Delete (int id)
+        {
+            var post = _context.Posts.SingleOrDefault(x => x.Id == id);
+
+            if (post == null)
             {
-                return "Post was added";
+                return NotFound("Post with the id " + id + " does not exist");
             }
 
-            return "Post adding failed";
+            _context.Posts.Remove(post);
+            _context.SaveChanges();
+
+            return Ok("Post with the id " + id + " deleted successfully");
+        }
+
+        [HttpPut]
+        public IActionResult Update(int id, Post post)
+        {
+            var postToUpdate = _context.Posts.SingleOrDefault(x => x.Id == id);
+
+            if (postToUpdate == null)
+            {
+                return NotFound("Post with the id " + id + " does not exist");
+            }
+
+            if (post.Contents != null)
+            {
+                postToUpdate.Contents = post.Contents;
+            }
+
+            if (post.Title != null)
+            {
+                postToUpdate.Title = post.Title;
+            }
+
+            _context.Update(postToUpdate);
+            _context.SaveChanges();
+
+            return Ok("Post with the id " + id + " updated successfully");
         }
 
         private int AssignId()
