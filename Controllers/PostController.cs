@@ -9,30 +9,62 @@ namespace Blog.Controllers
     [ApiController]
     public class PostController : ControllerBase
     {
-        PostRepo p = new PostRepo();
-        [HttpGet]
-        public string GetName()
+        private readonly PostDbContext _context;
+        private int counter = 0;
+
+        public PostController(PostDbContext context)
         {
-            return "Test";
+            _context = context;
         }
 
         [HttpGet]
-        public string GetFullName()
+        public Post GetById(int id)
         {
-            return "Robert";
+            Post post = _context.Posts.SingleOrDefault(e => e.Id == id);
+            if (post != null)
+            {
+                return post;
+            }
+
+            return null;
+        }
+
+        [HttpGet]
+        public List<Post> GetAll()
+        {
+            return _context.Posts.ToList();
         }
 
         [HttpPost]
-        public string Add()
+        public string Add(string contents, string title)
         {
-            Post post = new Post { Id = 1, Contents = "asd", Title = "ffff", Owner = "RObert", Modified_at = DateTime.Now };
-            p.Add(post);
-            if (p != null)
+            string date = Date();
+            Post post = new Post { Id = AssignId(), Contents = contents, Title = title, Owner = Owner(), 
+                Created_at = date, Modified_at = date };
+            _context.Posts.Add(post);
+            _context.SaveChanges();
+            if (_context.Posts.ToList() != null)
             {
-                return "Ok";
+                return "Post was added";
             }
 
-            return "Failed";
+            return "Post adding failed";
+        }
+
+        private int AssignId()
+        {
+            return counter++;
+        }
+
+        private string Owner()
+        {
+            return "Owner" + counter;
+        }
+
+        private string Date()
+        {
+            DateTime date = DateTime.Now;
+            return date.ToShortDateString() + " " + date.ToShortTimeString();
         }
     }
 }
