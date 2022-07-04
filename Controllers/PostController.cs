@@ -1,5 +1,4 @@
 ﻿using Blog.Models;
-using Blog.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,14 +35,13 @@ namespace Blog.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(string contents, string title)
+        public IActionResult Add(Post post)
         {
-            string date = Date();
-            Post post = new Post { Id = AssignId(), Contents = contents, Title = title, Owner = Owner(), 
-                Created_at = date, Modified_at = date };
-            _context.Posts.Add(post);
+            Post postToAdd = new Post { Id = AssignId(), Contents = post.Contents, Title = post.Title, Owner = Owner(), 
+                Modified_at = DateTime.Now };
+            _context.Posts.Add(postToAdd);
             _context.SaveChanges();
-            return Created("post/" + post.Id, post);
+            return Created("post/" + postToAdd.Id, postToAdd);
         }
 
         [HttpDelete]
@@ -82,6 +80,7 @@ namespace Blog.Controllers
                 postToUpdate.Title = post.Title;
             }
 
+            postToUpdate.Modified_at = DateTime.Now;
             _context.Update(postToUpdate);
             _context.SaveChanges();
 
@@ -96,12 +95,6 @@ namespace Blog.Controllers
         private string Owner()
         {
             return "Owner" + counter;
-        }
-
-        private string Date()
-        {
-            DateTime date = DateTime.Now;
-            return date.ToShortDateString() + " " + date.ToShortTimeString();
         }
     }
 }

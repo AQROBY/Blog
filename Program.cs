@@ -1,5 +1,4 @@
 using Blog.Models;
-using Blog.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

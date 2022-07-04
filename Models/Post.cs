@@ -10,7 +10,7 @@ namespace Blog.Models
         [Required(ErrorMessage = "Content is required")]
         public string Contents { get; set; }
         public string Owner { get; set; }
-        public string Created_at { get; set; }
-        public string Modified_at { get; set; }
+        public DateTime Created_at { get; set; } = DateTime.Now;
+        public DateTime Modified_at { get; set; }
     }
 }
