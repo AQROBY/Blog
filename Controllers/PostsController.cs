@@ -4,34 +4,31 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Controllers
 {
-    [Route("[controller]/[action]")]
+    [Route("[controller]")]
     [ApiController]
-    public class PostController : ControllerBase
+    public class PostsController : ControllerBase
     {
         private readonly PostDbContext _context;
-        private int counter = 0;
 
-        public PostController(PostDbContext context)
+        public PostsController(PostDbContext context)
         {
             _context = context;
         }
 
-        [HttpGet]
-        public Post GetById(int id)
+        [HttpGet("{id:int?}")]
+        public IActionResult Get (int id = 0)
         {
-            Post post = _context.Posts.SingleOrDefault(e => e.Id == id);
-            if (post != null)
+            if (id != 0)
             {
-                return post;
+                Post post = _context.Posts.SingleOrDefault(e => e.Id == id);
+                if (post != null)
+                {
+                    return Ok(post);
+                }
+                return NotFound("Post with the id " + id + " does not exist");
             }
-
-            return null;
-        }
-
-        [HttpGet]
-        public List<Post> GetAll()
-        {
-            return _context.Posts.ToList();
+            return Ok(GetAll());
+            
         }
 
         [HttpPost]
@@ -44,7 +41,7 @@ namespace Blog.Controllers
             return Created("post/" + postToAdd.Id, postToAdd);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id:int}")]
         public IActionResult Delete (int id)
         {
             var post = _context.Posts.SingleOrDefault(x => x.Id == id);
@@ -60,7 +57,7 @@ namespace Blog.Controllers
             return Ok("Post with the id " + id + " deleted successfully");
         }
 
-        [HttpPut]
+        [HttpPut("{id:int}")]
         public IActionResult Update(int id, Post post)
         {
             var postToUpdate = _context.Posts.SingleOrDefault(x => x.Id == id);
@@ -87,14 +84,21 @@ namespace Blog.Controllers
             return Ok("Post with the id " + id + " updated successfully");
         }
 
+        private List<Post> GetAll()
+        {
+
+            return _context.Posts.ToList();
+        }
+
         private int AssignId()
         {
-            return counter++;
+            return _context.Posts.Count() + 1;
         }
 
         private string Owner()
         {
-            return "Owner" + counter;
+            int ownerNumber = _context.Posts.Count() + 1;
+            return "Owner " + ownerNumber;
         }
     }
 }
