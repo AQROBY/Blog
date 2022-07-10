@@ -4,6 +4,7 @@ namespace Blog.Models
 {
     public class Post
     {
+        [Key]
         public int Id { get; set; }
         [Required(ErrorMessage = "Title is required")]
         public string Title { get; set; }

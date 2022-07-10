@@ -1,4 +1,5 @@
-﻿using Blog.Models;
+﻿using Blog.Data;
+using Blog.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,9 +9,9 @@ namespace Blog.Controllers
     [ApiController]
     public class PostsController : ControllerBase
     {
-        private readonly PostDbContext _context;
+        private readonly InMemoryApplicationDbContext _context;
 
-        public PostsController(PostDbContext context)
+        public PostsController(InMemoryApplicationDbContext context)
         {
             _context = context;
         }
