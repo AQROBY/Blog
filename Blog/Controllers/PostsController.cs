@@ -9,9 +9,9 @@ namespace Blog.Controllers
     [ApiController]
     public class PostsController : ControllerBase
     {
-        private readonly InMemoryApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public PostsController(InMemoryApplicationDbContext context)
+        public PostsController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -35,7 +35,7 @@ namespace Blog.Controllers
         [HttpPost]
         public IActionResult Add(Post post)
         {
-            Post postToAdd = new Post { Id = AssignId(), Contents = post.Contents, Title = post.Title, Owner = Owner(), 
+            Post postToAdd = new Post {Contents = post.Contents, Title = post.Title, Owner = Owner(), 
                 Modified_at = DateTime.Now };
             _context.Posts.Add(postToAdd);
             _context.SaveChanges();
@@ -89,11 +89,6 @@ namespace Blog.Controllers
         {
 
             return _context.Posts.ToList();
-        }
-
-        private int AssignId()
-        {
-            return _context.Posts.Count() + 1;
         }
 
         private string Owner()

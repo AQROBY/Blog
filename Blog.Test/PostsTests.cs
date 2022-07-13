@@ -15,7 +15,7 @@ namespace Blog.Test
 
         public PostsTests()
         {
-            var webAppFactory = new WebApplicationFactory<Program>();
+            var webAppFactory = new CustomWebApplicationFactory<Program>();
             _httpClient = webAppFactory.CreateDefaultClient();
         }
 
