@@ -33,7 +33,6 @@ namespace Blog.Test
             };
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("Posts", stringContent);
-            var result = await response.Content.ReadAsStringAsync();
             Assert.Contains("Created", response.ReasonPhrase);
         }
 
