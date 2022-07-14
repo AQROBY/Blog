@@ -37,6 +37,42 @@ namespace Blog.Test
         }
 
         [Fact]
+        public async Task TestPost_TitleMissing_ShouldNotAddPost()
+        {
+            Post post = new Post
+            {
+                Id = 1,
+                Title = "",
+                Contents = "Witcher 3",
+                Created_at = DateTime.Now,
+                Modified_at = DateTime.Now,
+                Owner = "Eu"
+            };
+            var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync("Posts", stringContent);
+            var result = await response.Content.ReadAsStringAsync();
+            Assert.Contains("Title is required", result);
+        }
+
+        [Fact]
+        public async Task TestPost_ContentMissing_ShouldNotAddPost()
+        {
+            Post post = new Post
+            {
+                Id = 1,
+                Title = "Game",
+                Contents = "",
+                Created_at = DateTime.Now,
+                Modified_at = DateTime.Now,
+                Owner = "Eu"
+            };
+            var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync("Posts", stringContent);
+            var result = await response.Content.ReadAsStringAsync();
+            Assert.Contains("Content is required", result);
+        }
+
+        [Fact]
         public async Task TestGet_ShouldGetOneAndOnlyPost()
         {
             Post post = new Post
@@ -152,6 +188,42 @@ namespace Blog.Test
             var response = await _httpClient.PutAsync("Posts/1", stringContent);
             var result = await response.Content.ReadAsStringAsync();
             Assert.Equal("Post with the id 1 does not exist", result);
+        }
+
+        [Fact]
+        public async Task TestUpdate_TitleMissing_ShouldNotUpdatePost()
+        {
+            Post post = new Post
+            {
+                Id = 1,
+                Title = "",
+                Contents = "Witcher 3",
+                Created_at = DateTime.Now,
+                Modified_at = DateTime.Now,
+                Owner = "Eu"
+            };
+            var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PutAsync("Posts/1", stringContent);
+            var result = await response.Content.ReadAsStringAsync();
+            Assert.Contains("Title is required", result);
+        }
+
+        [Fact]
+        public async Task TestUpdate_ContentMissing_ShouldNotUpdatePost()
+        {
+            Post post = new Post
+            {
+                Id = 1,
+                Title = "Game",
+                Contents = "",
+                Created_at = DateTime.Now,
+                Modified_at = DateTime.Now,
+                Owner = "Eu"
+            };
+            var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PutAsync("Posts/1", stringContent);
+            var result = await response.Content.ReadAsStringAsync();
+            Assert.Contains("Content is required", result);
         }
 
         [Fact]
