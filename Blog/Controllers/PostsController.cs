@@ -82,7 +82,7 @@ namespace Blog.Controllers
             _context.Update(postToUpdate);
             _context.SaveChanges();
 
-            return Ok("Post with the id " + id + " updated successfully");
+            return Created("post/" + postToUpdate.Id, postToUpdate);
         }
 
         private List<Post> GetAll()
