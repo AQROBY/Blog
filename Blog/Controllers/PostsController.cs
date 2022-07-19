@@ -1,6 +1,5 @@
 ﻿using Blog.Data;
 using Blog.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Controllers
@@ -28,8 +27,7 @@ namespace Blog.Controllers
                 }
                 return NotFound("Post with the id " + id + " does not exist");
             }
-            return Ok(GetAll());
-            
+            return Ok(GetAll()); 
         }
 
         [HttpPost]
