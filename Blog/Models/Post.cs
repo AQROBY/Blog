@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Blog.Models
 {
@@ -13,5 +14,6 @@ namespace Blog.Models
         public string Owner { get; set; }
         public DateTime Created_at { get; set; } = DateTime.Now;
         public DateTime Modified_at { get; set; }
+        public User User { get; set; }
     }
 }

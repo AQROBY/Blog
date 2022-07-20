@@ -33,11 +33,22 @@ namespace Blog.Controllers
         [HttpPost]
         public IActionResult Add(Post post)
         {
-            Post postToAdd = new Post {Contents = post.Contents, Title = post.Title, Owner = Owner(), 
-                Modified_at = DateTime.Now };
-            _context.Posts.Add(postToAdd);
-            _context.SaveChanges();
-            return Created("post/" + postToAdd.Id, postToAdd);
+            User userToAdd = _context.Users.SingleOrDefault(e => e.Id == post.User.Id);
+            if (userToAdd != null)
+            {
+                Post postToAdd = new Post
+                {
+                    Contents = post.Contents,
+                    Title = post.Title,
+                    Owner = post.User.Name,
+                    Modified_at = DateTime.Now,
+                    User = userToAdd
+                };
+                _context.Posts.Add(postToAdd);
+                _context.SaveChanges();
+                return Created("post/" + postToAdd.Id, postToAdd);
+            }
+            return NotFound("User with the id " + post.User.Id + " does not exist");
         }
 
         [HttpDelete("{id:int}")]
@@ -59,40 +70,39 @@ namespace Blog.Controllers
         [HttpPut("{id:int}")]
         public IActionResult Update(int id, Post post)
         {
-            var postToUpdate = _context.Posts.SingleOrDefault(x => x.Id == id);
-
-            if (postToUpdate == null)
+            User userToAdd = _context.Users.SingleOrDefault(e => e.Id == post.User.Id);
+            if (userToAdd != null)
             {
-                return NotFound("Post with the id " + id + " does not exist");
+                var postToUpdate = _context.Posts.SingleOrDefault(x => x.Id == id);
+
+                if (postToUpdate == null)
+                {
+                    return NotFound("Post with the id " + id + " does not exist");
+                }
+
+                if (post.Contents != null)
+                {
+                    postToUpdate.Contents = post.Contents;
+                }
+
+                if (post.Title != null)
+                {
+                    postToUpdate.Title = post.Title;
+                }
+
+                postToUpdate.Modified_at = DateTime.Now;
+                _context.Update(postToUpdate);
+                _context.SaveChanges();
+
+                return Created("post/" + postToUpdate.Id, postToUpdate);
             }
-
-            if (post.Contents != null)
-            {
-                postToUpdate.Contents = post.Contents;
-            }
-
-            if (post.Title != null)
-            {
-                postToUpdate.Title = post.Title;
-            }
-
-            postToUpdate.Modified_at = DateTime.Now;
-            _context.Update(postToUpdate);
-            _context.SaveChanges();
-
-            return Created("post/" + postToUpdate.Id, postToUpdate);
+            return NotFound("User with the id " + post.User.Id + " does not exist");
         }
 
         private List<Post> GetAll()
         {
 
             return _context.Posts.ToList();
-        }
-
-        private string Owner()
-        {
-            int ownerNumber = _context.Posts.Count() + 1;
-            return "Owner " + ownerNumber;
         }
     }
 }

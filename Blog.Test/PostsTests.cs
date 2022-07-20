@@ -29,7 +29,6 @@ namespace Blog.Test
                 Contents = "Witcher 3",
                 Created_at = DateTime.Now,
                 Modified_at = DateTime.Now,
-                Owner = "Eu"
             };
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("Posts", stringContent);
@@ -46,7 +45,6 @@ namespace Blog.Test
                 Contents = "Witcher 3",
                 Created_at = DateTime.Now,
                 Modified_at = DateTime.Now,
-                Owner = "Eu"
             };
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("Posts", stringContent);
@@ -64,7 +62,6 @@ namespace Blog.Test
                 Contents = "",
                 Created_at = DateTime.Now,
                 Modified_at = DateTime.Now,
-                Owner = "Eu"
             };
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("Posts", stringContent);
@@ -82,7 +79,6 @@ namespace Blog.Test
                 Contents = "Witcher 3",
                 Created_at = DateTime.Now,
                 Modified_at = DateTime.Now,
-                Owner = "Eu"
             };
             Post post2 = new Post
             {
@@ -91,7 +87,6 @@ namespace Blog.Test
                 Contents = "Witcher 4",
                 Created_at = DateTime.Now,
                 Modified_at = DateTime.Now,
-                Owner = "Eu"
             };
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var addPost = await _httpClient.PostAsync("Posts", stringContent);
@@ -113,7 +108,6 @@ namespace Blog.Test
                 Contents = "Witcher 3",
                 Created_at = DateTime.Now,
                 Modified_at = DateTime.Now,
-                Owner = "Eu"
             };
             Post post2 = new Post
             {
@@ -122,7 +116,6 @@ namespace Blog.Test
                 Contents = "Witcher 4",
                 Created_at = DateTime.Now,
                 Modified_at = DateTime.Now,
-                Owner = "Eu"
             };
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var addPost = await _httpClient.PostAsync("Posts", stringContent);
@@ -159,7 +152,6 @@ namespace Blog.Test
                 Contents = "Witcher 3",
                 Created_at = DateTime.Now,
                 Modified_at = DateTime.Now,
-                Owner = "Eu"
             };
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("Posts", stringContent);
@@ -182,7 +174,6 @@ namespace Blog.Test
                 Contents = "Witcher 3",
                 Created_at = DateTime.Now,
                 Modified_at = DateTime.Now,
-                Owner = "Eu"
             };
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync("Posts/1", stringContent);
@@ -200,7 +191,6 @@ namespace Blog.Test
                 Contents = "Witcher 3",
                 Created_at = DateTime.Now,
                 Modified_at = DateTime.Now,
-                Owner = "Eu"
             };
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync("Posts/1", stringContent);
@@ -218,7 +208,6 @@ namespace Blog.Test
                 Contents = "",
                 Created_at = DateTime.Now,
                 Modified_at = DateTime.Now,
-                Owner = "Eu"
             };
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync("Posts/1", stringContent);
@@ -236,7 +225,6 @@ namespace Blog.Test
                 Contents = "Witcher 3",
                 Created_at = DateTime.Now,
                 Modified_at = DateTime.Now,
-                Owner = "Eu"
             };
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var add = await _httpClient.PostAsync("Posts", stringContent);
@@ -247,7 +235,6 @@ namespace Blog.Test
                 Contents = "Witcher 4",
                 Created_at = DateTime.Now,
                 Modified_at = DateTime.Now,
-                Owner = "Eu"
             };
             var stringContentUpdate = new StringContent(JsonConvert.SerializeObject(postUpdate), Encoding.UTF8, "application/json");
             var update = await _httpClient.PutAsync("Posts/1", stringContentUpdate);
