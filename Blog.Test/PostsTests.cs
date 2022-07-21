@@ -19,6 +19,9 @@ namespace Blog.Test
             _httpClient = webAppFactory.CreateDefaultClient();
         }
 
+        User user = new User { Id = 1, Name = "Robert", Email = "robert@yahoo.com", Password = "pass",
+        Modified_at = DateTime.Now, Created_at = DateTime.Now};
+
         [Fact]
         public async Task TestPost_ShouldAddPost()
         {
@@ -27,8 +30,10 @@ namespace Blog.Test
                 Id = 1,
                 Title = "Game",
                 Contents = "Witcher 3",
+                Owner = "x",
                 Created_at = DateTime.Now,
                 Modified_at = DateTime.Now,
+                User = user
             };
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("Posts", stringContent);

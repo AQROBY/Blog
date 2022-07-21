@@ -29,10 +29,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-using (var serviceScope = app.Services.GetService<IServiceScopeFactory>().CreateScope())
+if (!app.Environment.IsEnvironment("Test"))
 {
-    var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    context.Database.Migrate();
+    using (var serviceScope = app.Services.GetService<IServiceScopeFactory>().CreateScope())
+    {
+        var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        context.Database.Migrate();
+    }
 }
 
 app.UseAuthorization();
