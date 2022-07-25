@@ -40,10 +40,6 @@ namespace Blog.Migrations
                     b.Property<DateTime>("Modified_at")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Owner")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -55,7 +51,7 @@ namespace Blog.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Posts", (string)null);
+                    b.ToTable("Posts");
                 });
 
             modelBuilder.Entity("Blog.Models.User", b =>
@@ -87,18 +83,23 @@ namespace Blog.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Blog.Models.Post", b =>
                 {
-                    b.HasOne("Blog.Models.User", "User")
-                        .WithMany()
+                    b.HasOne("Blog.Models.User", "Owner")
+                        .WithMany("Posts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("Blog.Models.User", b =>
+                {
+                    b.Navigation("Posts");
                 });
 #pragma warning restore 612, 618
         }

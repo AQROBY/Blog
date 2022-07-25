@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blog.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220720225142_AddUserPostRelationship")]
+    [Migration("20220725205809_AddUserPostRelationship")]
     partial class AddUserPostRelationship
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,10 +41,6 @@ namespace Blog.Migrations
 
                     b.Property<DateTime>("Modified_at")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Owner")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -94,13 +90,18 @@ namespace Blog.Migrations
 
             modelBuilder.Entity("Blog.Models.Post", b =>
                 {
-                    b.HasOne("Blog.Models.User", "User")
-                        .WithMany()
+                    b.HasOne("Blog.Models.User", "Owner")
+                        .WithMany("Posts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("Blog.Models.User", b =>
+                {
+                    b.Navigation("Posts");
                 });
 #pragma warning restore 612, 618
         }

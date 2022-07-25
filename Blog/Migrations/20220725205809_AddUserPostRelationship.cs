@@ -8,6 +8,10 @@ namespace Blog.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropColumn(
+                name: "Owner",
+                table: "Posts");
+
             migrationBuilder.AddColumn<int>(
                 name: "UserId",
                 table: "Posts",
@@ -42,6 +46,13 @@ namespace Blog.Migrations
             migrationBuilder.DropColumn(
                 name: "UserId",
                 table: "Posts");
+
+            migrationBuilder.AddColumn<string>(
+                name: "Owner",
+                table: "Posts",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
         }
     }
 }

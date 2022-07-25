@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Blog.Models
 {
@@ -18,5 +19,7 @@ namespace Blog.Models
         public string Password { get; set; }
         public DateTime Created_at { get; set; } = DateTime.Now;
         public DateTime Modified_at { get; set; }
+        [JsonIgnore]
+        public List<Post>? Posts { get; set; }
     }
 }

@@ -30,10 +30,9 @@ namespace Blog.Test
                 Id = 1,
                 Title = "Game",
                 Contents = "Witcher 3",
-                Owner = "x",
                 Created_at = DateTime.Now,
                 Modified_at = DateTime.Now,
-                User = user
+                UserId = user.Id
             };
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("Posts", stringContent);

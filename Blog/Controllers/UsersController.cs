@@ -38,7 +38,8 @@ namespace Blog.Controllers
                 Name = user.Name,
                 Email = user.Email,
                 Password = user.Password,
-                Modified_at = DateTime.Now
+                Modified_at = DateTime.Now,
+                Posts = { }
             };
 
             _context.Users.Add(userToAdd);

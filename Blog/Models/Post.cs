@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Blog.Models
 {
@@ -11,9 +11,11 @@ namespace Blog.Models
         public string Title { get; set; }
         [Required(ErrorMessage = "Content is required")]
         public string Contents { get; set; }
-        public string Owner { get; set; }
         public DateTime Created_at { get; set; } = DateTime.Now;
         public DateTime Modified_at { get; set; }
-        public User User { get; set; }
+        [Required(ErrorMessage = "User id is required")]
+        public int UserId { get; set; }
+        [JsonIgnore]
+        public User Owner { get; set; }
     }
 }
