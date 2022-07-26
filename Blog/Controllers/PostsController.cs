@@ -3,7 +3,6 @@ using Blog.Dtos.Post;
 using Blog.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Net;
 
 namespace Blog.Controllers
 {
@@ -51,6 +50,10 @@ namespace Blog.Controllers
             }
             catch(DbUpdateException e)
             {
+                if (e.InnerException.Message.Contains("UPDATE statement conflicted with the FOREIGN KEY constraint"))
+                {
+                    return NotFound("User " + post.UserId + " does not exist");
+                }
                 return NotFound(e.InnerException.Message);
             }
         }
@@ -74,28 +77,33 @@ namespace Blog.Controllers
         [HttpPut("{id:int}")]
         public IActionResult Update(int id, AddPostDto post)
         {
-            var postToUpdate = _context.Posts.SingleOrDefault(x => x.Id == id);
-
-            if (postToUpdate == null)
+            try
             {
-                return NotFound("Post with the id " + id + " does not exist");
-            }
+                Post postToUpdate = new Post
+                {
+                    Id = id,
+                    Contents = post.Contents,
+                    Title = post.Title,
+                    Modified_at = DateTime.Now,
+                    UserId = post.UserId
+                };
+                _context.Update(postToUpdate);
+                _context.SaveChanges();
 
-            if (post.Contents != null)
+                return Created("post/" + postToUpdate.Id, postToUpdate);
+            }
+            catch (Exception e)
             {
-                postToUpdate.Contents = post.Contents;
+                if (e.Message.Contains("The database operation was expected to affect 1 row"))
+                {
+                    return NotFound("Post with the id " + id + " does not exist");
+                }
+                if (e.InnerException.Message.Contains("UPDATE statement conflicted with the FOREIGN KEY constraint"))
+                {
+                    return NotFound("User " + post.UserId + " does not exist");
+                }
+                return NotFound(e.InnerException.Message);
             }
-
-            if (post.Title != null)
-            {
-                postToUpdate.Title = post.Title;
-            }
-
-            postToUpdate.Modified_at = DateTime.Now;
-            _context.Update(postToUpdate);
-            _context.SaveChanges();
-
-            return Created("post/" + postToUpdate.Id, postToUpdate);
         }
 
         private List<Post> GetAll()

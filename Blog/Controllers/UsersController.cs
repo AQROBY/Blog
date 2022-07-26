@@ -1,6 +1,7 @@
 ﻿using Blog.Data;
 using Blog.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Controllers
 {
@@ -33,18 +34,24 @@ namespace Blog.Controllers
         [HttpPost]
         public IActionResult Add(User user)
         {
-            User userToAdd = new User
+            try
             {
-                Name = user.Name,
-                Email = user.Email,
-                Password = user.Password,
-                Modified_at = DateTime.Now,
-                Posts = { }
-            };
-
-            _context.Users.Add(userToAdd);
-            _context.SaveChanges();
-            return Created("user/" + userToAdd.Id, userToAdd);
+                User userToAdd = new User
+                {
+                    Name = user.Name,
+                    Email = user.Email,
+                    Password = user.Password,
+                    Modified_at = DateTime.Now,
+                    Posts = { }
+                };
+                _context.Users.Add(userToAdd);
+                _context.SaveChanges();
+                return Created("user/" + userToAdd.Id, userToAdd);
+            }
+            catch (DbUpdateException e)
+            {
+                return NotFound(e.InnerException.Message);
+            }
         }
 
         [HttpDelete("{id:int}")]
@@ -66,33 +73,29 @@ namespace Blog.Controllers
         [HttpPut("{id:int}")]
         public IActionResult Update(int id, User user)
         {
-            var userToUpdate = _context.Users.SingleOrDefault(x => x.Id == id);
-
-            if (userToUpdate == null)
+            try
             {
-                return NotFound("User with the id " + id + " does not exist");
-            }
+                User userToUpdate = new User
+                {
+                    Id = id,
+                    Name = user.Name,
+                    Email = user.Email,
+                    Password = user.Password,
+                    Modified_at = DateTime.Now
+                };
+                _context.Update(userToUpdate);
+                _context.SaveChanges();
 
-            if (user.Name != null)
+                return Created("user/" + userToUpdate.Id, userToUpdate);
+            }
+            catch (Exception e)
             {
-                userToUpdate.Name = user.Name;
+                if (e.Message.Contains("The database operation was expected to affect 1 row"))
+                {
+                    return NotFound("User with the id " + id + " does not exist");
+                }
+                return NotFound(e.InnerException.Message);
             }
-
-            if (user.Email != null)
-            {
-                userToUpdate.Email = user.Email;
-            }
-
-            if (user.Password != null)
-            {
-                userToUpdate.Password = user.Password;
-            }
-
-            userToUpdate.Modified_at = DateTime.Now;
-            _context.Update(userToUpdate);
-            _context.SaveChanges();
-
-            return Created("user/" + userToUpdate.Id, userToUpdate);
         }
 
         private List<User> GetAll()
