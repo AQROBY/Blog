@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -88,13 +89,13 @@ namespace Blog.Test
                 Created_at = DateTime.Now,
                 Modified_at = DateTime.Now,
             };
+            Thread.Sleep(2000);
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var addPost = await _httpClient.PostAsync("Posts", stringContent);
             Assert.Contains("Created", addPost.ReasonPhrase);
             var stringContent2 = new StringContent(JsonConvert.SerializeObject(post2), Encoding.UTF8, "application/json");
             var addPost2 = await _httpClient.PostAsync("Posts", stringContent2);
             Assert.Contains("Created", addPost2.ReasonPhrase);
-
             var get = await _httpClient.GetAsync("Posts/1");
             var result = await get.Content.ReadAsStringAsync();
             Assert.Contains("Witcher 3", result);
