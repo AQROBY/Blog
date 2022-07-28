@@ -19,8 +19,7 @@ namespace Blog.Test
             _httpClient = webAppFactory.CreateDefaultClient();
         }
 
-        User user = new User { Id = 1, Name = "Robert", Email = "robert@yahoo.com", Password = "pass",
-        Modified_at = DateTime.Now, Created_at = DateTime.Now};
+        User user = new User { Id = 1, Name = "Robert", Email = "robert@yahoo.com", Password = "pass" };
 
         [Fact]
         public async Task TestPost_ShouldAddPost()
@@ -45,7 +44,6 @@ namespace Blog.Test
             Post post = new Post
             {
                 Id = 1,
-                Title = "",
                 Contents = "Witcher 3",
                 Created_at = DateTime.Now,
                 Modified_at = DateTime.Now,
@@ -53,7 +51,7 @@ namespace Blog.Test
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("Posts", stringContent);
             var result = await response.Content.ReadAsStringAsync();
-            Assert.Contains("Title is required", result);
+            Assert.Contains("Title field is required", result);
         }
 
         [Fact]
@@ -63,14 +61,13 @@ namespace Blog.Test
             {
                 Id = 1,
                 Title = "Game",
-                Contents = "",
                 Created_at = DateTime.Now,
                 Modified_at = DateTime.Now,
             };
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("Posts", stringContent);
             var result = await response.Content.ReadAsStringAsync();
-            Assert.Contains("Content is required", result);
+            Assert.Contains("Contents field is required", result);
         }
 
         [Fact]
@@ -191,7 +188,6 @@ namespace Blog.Test
             Post post = new Post
             {
                 Id = 1,
-                Title = "",
                 Contents = "Witcher 3",
                 Created_at = DateTime.Now,
                 Modified_at = DateTime.Now,
@@ -199,7 +195,7 @@ namespace Blog.Test
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync("Posts/1", stringContent);
             var result = await response.Content.ReadAsStringAsync();
-            Assert.Contains("Title is required", result);
+            Assert.Contains("Title field is required", result);
         }
 
         [Fact]
@@ -209,14 +205,13 @@ namespace Blog.Test
             {
                 Id = 1,
                 Title = "Game",
-                Contents = "",
                 Created_at = DateTime.Now,
                 Modified_at = DateTime.Now,
             };
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync("Posts/1", stringContent);
             var result = await response.Content.ReadAsStringAsync();
-            Assert.Contains("Content is required", result);
+            Assert.Contains("Contents field is required", result);
         }
 
         [Fact]
@@ -243,7 +238,8 @@ namespace Blog.Test
             var stringContentUpdate = new StringContent(JsonConvert.SerializeObject(postUpdate), Encoding.UTF8, "application/json");
             var update = await _httpClient.PutAsync("Posts/1", stringContentUpdate);
             var result = await update.Content.ReadAsStringAsync();
-            Assert.Equal("Post with the id 1 updated successfully", result);
+            Assert.Contains("Witcher 4", result);
+            Assert.DoesNotContain("Witcher 3", result);
 
             var get = await _httpClient.GetAsync("Posts/1");
             var getResult = await get.Content.ReadAsStringAsync();

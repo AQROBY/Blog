@@ -94,7 +94,8 @@ namespace Blog.Controllers
             }
             catch (Exception e)
             {
-                if (e.Message.Contains("The database operation was expected to affect 1 row"))
+                if (e.Message.Contains("The database operation was expected to affect 1 row") ||
+                    e.Message.Contains("Attempted to update or delete an entity that does not exist in the store"))
                 {
                     return NotFound("Post with the id " + id + " does not exist");
                 }
