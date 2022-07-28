@@ -1,5 +1,4 @@
 using Blog.Models;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
@@ -91,12 +90,15 @@ namespace Blog.Test
             };
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var addPost = await _httpClient.PostAsync("Posts", stringContent);
+            Assert.Contains("Created", addPost.ReasonPhrase);
             var stringContent2 = new StringContent(JsonConvert.SerializeObject(post2), Encoding.UTF8, "application/json");
-            var addPost2 = await _httpClient.PostAsync("Posts", stringContent);
+            var addPost2 = await _httpClient.PostAsync("Posts", stringContent2);
+            Assert.Contains("Created", addPost2.ReasonPhrase);
+
             var get = await _httpClient.GetAsync("Posts/1");
             var result = await get.Content.ReadAsStringAsync();
             Assert.Contains("Witcher 3", result);
-            Assert.Equal(1, result.Split("{").Length - 1);
+            Assert.DoesNotContain("Witcher 4", result);
         }
 
         [Fact]
@@ -156,6 +158,8 @@ namespace Blog.Test
             };
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("Posts", stringContent);
+            Assert.Contains("Created", response.ReasonPhrase);
+
             var delete = await _httpClient.DeleteAsync("Posts/1");
             var result = await delete.Content.ReadAsStringAsync();
             Assert.Equal("Post with the id 1 deleted successfully", result);
