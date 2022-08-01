@@ -48,9 +48,9 @@ namespace Blog.Controllers
                 _context.SaveChanges();
                 return Created("post/" + postToAdd.Id, postToAdd);
             }
-            catch(DbUpdateException e)
+            catch(Exception e)
             {
-                if (e.InnerException.Message.Contains("UPDATE statement conflicted with the FOREIGN KEY constraint"))
+                if (e.HResult == -2146233088)
                 {
                     return NotFound("User " + post.UserId + " does not exist");
                 }
@@ -94,12 +94,11 @@ namespace Blog.Controllers
             }
             catch (Exception e)
             {
-                if (e.Message.Contains("The database operation was expected to affect 1 row") ||
-                    e.Message.Contains("Attempted to update or delete an entity that does not exist in the store"))
+                if (e.HResult == -2146233088 && e.InnerException == null)
                 {
                     return NotFound("Post with the id " + id + " does not exist");
                 }
-                if (e.InnerException.Message.Contains("UPDATE statement conflicted with the FOREIGN KEY constraint"))
+                if (e.InnerException.HResult == -2146232060)
                 {
                     return NotFound("User " + post.UserId + " does not exist");
                 }

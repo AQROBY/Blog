@@ -48,7 +48,7 @@ namespace Blog.Controllers
                 _context.SaveChanges();
                 return Created("user/" + userToAdd.Id, userToAdd);
             }
-            catch (DbUpdateException e)
+            catch (Exception e)
             {
                 return NotFound(e.InnerException.Message);
             }
@@ -90,8 +90,7 @@ namespace Blog.Controllers
             }
             catch (Exception e)
             {
-                if (e.Message.Contains("The database operation was expected to affect 1 row")
-                    || e.Message.Contains("Attempted to update or delete an entity that does not exist in the store"))
+                if (e.HResult == -2146233088)
                 {
                     return NotFound("User with the id " + id + " does not exist");
                 }
