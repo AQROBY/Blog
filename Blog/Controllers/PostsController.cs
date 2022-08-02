@@ -1,8 +1,6 @@
 ﻿using Blog.Data;
-using Blog.Dtos.Post;
 using Blog.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Controllers
 {
@@ -33,7 +31,7 @@ namespace Blog.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(AddPostDto post)
+        public IActionResult Add(Post post)
         {
             try
             {
@@ -75,7 +73,7 @@ namespace Blog.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public IActionResult Update(int id, AddPostDto post)
+        public IActionResult Update(int id, Post post)
         {
             try
             {

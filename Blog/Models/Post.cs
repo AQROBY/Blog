@@ -16,6 +16,6 @@ namespace Blog.Models
         [Required(ErrorMessage = "User id is required")]
         public int UserId { get; set; }
         [JsonIgnore]
-        public User Owner { get; set; }
+        public User? Owner { get; set; }
     }
 }

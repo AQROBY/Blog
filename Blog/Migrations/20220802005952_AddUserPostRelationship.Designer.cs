@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blog.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220725205809_AddUserPostRelationship")]
+    [Migration("20220802005952_AddUserPostRelationship")]
     partial class AddUserPostRelationship
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
