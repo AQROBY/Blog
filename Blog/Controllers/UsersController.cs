@@ -15,19 +15,21 @@ namespace Blog.Controllers
             _context = context;
         }
 
-        [HttpGet("{id:int?}")]
-        public IActionResult Get(int id = 0)
+        [HttpGet("{id:int}")]
+        public IActionResult Get(int id)
         {
-            if (id != 0)
+            User user = _context.Users.SingleOrDefault(e => e.Id == id);
+            if (user != null)
             {
-                User user = _context.Users.SingleOrDefault(e => e.Id == id);
-                if (user != null)
-                {
-                    return Ok(user);
-                }
-                return NotFound("User with the id " + id + " does not exist");
+                return Ok(user);
             }
-            return Ok(GetAll());
+            return NotFound("User with the id " + id + " does not exist");
+        }
+
+        [HttpGet]
+        public List<User> GetAll()
+        {
+            return _context.Users.ToList();
         }
 
         [HttpPost]
@@ -95,12 +97,6 @@ namespace Blog.Controllers
                 }
                 return NotFound(e.InnerException.Message);
             }
-        }
-
-        private List<User> GetAll()
-        {
-
-            return _context.Users.ToList();
         }
     }
 }

@@ -15,19 +15,21 @@ namespace Blog.Controllers
             _context = context;
         }
 
-        [HttpGet("{id:int?}")]
-        public IActionResult Get (int id = 0)
+        [HttpGet("{id:int}")]
+        public IActionResult Get(int id)
         {
-            if (id != 0)
+            Post post = _context.Posts.SingleOrDefault(e => e.Id == id);
+            if (post != null)
             {
-                Post post = _context.Posts.SingleOrDefault(e => e.Id == id);
-                if (post != null)
-                {
-                    return Ok(post);
-                }
-                return NotFound("Post with the id " + id + " does not exist");
+                return Ok(post);
             }
-            return Ok(GetAll()); 
+            return NotFound("Post with the id " + id + " does not exist");
+        }
+
+        [HttpGet]
+        public List<Post> GetAll()
+        {
+            return _context.Posts.ToList();
         }
 
         [HttpPost]
@@ -46,7 +48,7 @@ namespace Blog.Controllers
                 _context.SaveChanges();
                 return Created("post/" + postToAdd.Id, postToAdd);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 if (e.HResult == -2146233088)
                 {
@@ -57,7 +59,7 @@ namespace Blog.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public IActionResult Delete (int id)
+        public IActionResult Delete(int id)
         {
             var post = _context.Posts.SingleOrDefault(x => x.Id == id);
 
@@ -102,12 +104,6 @@ namespace Blog.Controllers
                 }
                 return NotFound(e.InnerException.Message);
             }
-        }
-
-        private List<Post> GetAll()
-        {
-
-            return _context.Posts.ToList();
         }
     }
 }
