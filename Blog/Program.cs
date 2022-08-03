@@ -1,4 +1,5 @@
 using Blog.Data;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,7 +12,9 @@ builder.Services.AddSwaggerGen();
 
 if (builder.Environment.IsEnvironment("Test"))
 {
-    builder.Services.AddDbContext<ApplicationDbContext>(option => option.UseInMemoryDatabase("MyDb"));
+    var connection = new SqliteConnection(builder.Configuration.GetConnectionString("InMemoryDb"));
+    connection.Open();
+    builder.Services.AddDbContext<ApplicationDbContext>(option => option.UseSqlite(connection));
 }
 else
 {

@@ -19,11 +19,13 @@ namespace Blog.Test
             _httpClient = webAppFactory.CreateDefaultClient();
         }
 
-        User user = new User { Id = 1, Name = "Robert", Email = "robert@yahoo.com", Password = "pass" };
+        User user = new User { Id = 1, Name = "Robert", Email = "robert@yahoo.com", Password = "password" };
 
         [Fact]
         public async Task TestPost_ShouldAddPost()
         {
+            var userString = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
+            var addUser = await _httpClient.PostAsync("Users", userString);
             Post post = new Post
             {
                 Id = 1,
@@ -39,6 +41,47 @@ namespace Blog.Test
         }
 
         [Fact]
+        public async Task TestPost_OwnerNonExisting_ShouldNotAddPost()
+        {
+            var userString = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
+            var addUser = await _httpClient.PostAsync("Users", userString);
+            Post post = new Post
+            {
+                Id = 1,
+                Title = "Game",
+                Contents = "Witcher 3",
+                Created_at = DateTime.Now,
+                Modified_at = DateTime.Now,
+                UserId = 100
+            };
+            var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync("Posts", stringContent);
+            var get = await _httpClient.GetAsync("Posts/1");
+            var result = await get.Content.ReadAsStringAsync();
+            Assert.Contains("Post with the id 1 does not exist", result);
+        }
+
+        [Fact]
+        public async Task TestPost_NoOwner_ShouldNotAddPost()
+        {
+            var userString = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
+            var addUser = await _httpClient.PostAsync("Users", userString);
+            Post post = new Post
+            {
+                Id = 1,
+                Title = "Game",
+                Contents = "Witcher 3",
+                Created_at = DateTime.Now,
+                Modified_at = DateTime.Now
+            };
+            var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync("Posts", stringContent);
+            var get = await _httpClient.GetAsync("Posts/1");
+            var result = await get.Content.ReadAsStringAsync();
+            Assert.Contains("Post with the id 1 does not exist", result);
+        }
+
+        [Fact]
         public async Task TestPost_TitleMissing_ShouldNotAddPost()
         {
             Post post = new Post
@@ -51,7 +94,7 @@ namespace Blog.Test
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("Posts", stringContent);
             var result = await response.Content.ReadAsStringAsync();
-            Assert.Contains("Title field is required", result);
+            Assert.Contains("Title is required", result);
         }
 
         [Fact]
@@ -67,12 +110,14 @@ namespace Blog.Test
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("Posts", stringContent);
             var result = await response.Content.ReadAsStringAsync();
-            Assert.Contains("Contents field is required", result);
+            Assert.Contains("Content is required", result);
         }
 
         [Fact]
         public async Task TestGet_ShouldGetOneAndOnlyPost()
         {
+            var userString = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
+            var addUser = await _httpClient.PostAsync("Users", userString);
             Post post = new Post
             {
                 Id = 1,
@@ -80,6 +125,7 @@ namespace Blog.Test
                 Contents = "Witcher 3",
                 Created_at = DateTime.Now,
                 Modified_at = DateTime.Now,
+                UserId = user.Id
             };
             Post post2 = new Post
             {
@@ -88,8 +134,8 @@ namespace Blog.Test
                 Contents = "Witcher 4",
                 Created_at = DateTime.Now,
                 Modified_at = DateTime.Now,
+                UserId = user.Id
             };
-            Thread.Sleep(2000);
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var addPost = await _httpClient.PostAsync("Posts", stringContent);
             Assert.Contains("Created", addPost.ReasonPhrase);
@@ -105,6 +151,8 @@ namespace Blog.Test
         [Fact]
         public async Task TestGet_ShouldGetAllPosts()
         {
+            var userString = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
+            var addUser = await _httpClient.PostAsync("Users", userString);
             Post post = new Post
             {
                 Id = 1,
@@ -112,6 +160,7 @@ namespace Blog.Test
                 Contents = "Witcher 3",
                 Created_at = DateTime.Now,
                 Modified_at = DateTime.Now,
+                UserId = user.Id
             };
             Post post2 = new Post
             {
@@ -120,6 +169,7 @@ namespace Blog.Test
                 Contents = "Witcher 4",
                 Created_at = DateTime.Now,
                 Modified_at = DateTime.Now,
+                UserId = user.Id
             };
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var addPost = await _httpClient.PostAsync("Posts", stringContent);
@@ -149,6 +199,8 @@ namespace Blog.Test
         [Fact]
         public async Task TestDelete_ShouldDeletePost()
         {
+            var userString = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
+            var addUser = await _httpClient.PostAsync("Users", userString);
             Post post = new Post
             {
                 Id = 1,
@@ -156,6 +208,7 @@ namespace Blog.Test
                 Contents = "Witcher 3",
                 Created_at = DateTime.Now,
                 Modified_at = DateTime.Now,
+                UserId = user.Id
             };
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("Posts", stringContent);
@@ -180,6 +233,7 @@ namespace Blog.Test
                 Contents = "Witcher 3",
                 Created_at = DateTime.Now,
                 Modified_at = DateTime.Now,
+                UserId = user.Id
             };
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync("Posts/1", stringContent);
@@ -200,7 +254,7 @@ namespace Blog.Test
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync("Posts/1", stringContent);
             var result = await response.Content.ReadAsStringAsync();
-            Assert.Contains("Title field is required", result);
+            Assert.Contains("Title is required", result);
         }
 
         [Fact]
@@ -216,12 +270,14 @@ namespace Blog.Test
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync("Posts/1", stringContent);
             var result = await response.Content.ReadAsStringAsync();
-            Assert.Contains("Contents field is required", result);
+            Assert.Contains("Content is required", result);
         }
 
         [Fact]
         public async Task TestUpdate_ShouldUpdatePost()
         {
+            var userString = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
+            var addUser = await _httpClient.PostAsync("Users", userString);
             Post post = new Post
             {
                 Id = 1,
@@ -229,6 +285,7 @@ namespace Blog.Test
                 Contents = "Witcher 3",
                 Created_at = DateTime.Now,
                 Modified_at = DateTime.Now,
+                UserId = user.Id
             };
             var stringContent = new StringContent(JsonConvert.SerializeObject(post), Encoding.UTF8, "application/json");
             var add = await _httpClient.PostAsync("Posts", stringContent);
@@ -239,6 +296,7 @@ namespace Blog.Test
                 Contents = "Witcher 4",
                 Created_at = DateTime.Now,
                 Modified_at = DateTime.Now,
+                UserId = user.Id
             };
             var stringContentUpdate = new StringContent(JsonConvert.SerializeObject(postUpdate), Encoding.UTF8, "application/json");
             var update = await _httpClient.PutAsync("Posts/1", stringContentUpdate);
