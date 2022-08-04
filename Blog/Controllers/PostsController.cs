@@ -27,7 +27,7 @@ namespace Blog.Controllers
         }
 
         [HttpGet]
-        public List<Post> GetAll()
+        public List<Post> Get()
         {
             return _context.Posts.ToList();
         }

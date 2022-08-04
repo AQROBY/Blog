@@ -213,6 +213,49 @@ namespace Blog.Test
         }
 
         [Fact]
+        public async Task TestDeleteAllUsersPosts_ShouldDeleteUser()
+        {
+            User user = new User
+            {
+                Name = "Robert",
+                Email = "robert@yahoo.com",
+                Password = "dotnet"
+            };
+            var stringContent = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync("Users", stringContent);
+
+            Post post1 = new Post
+            {
+                Id = 1,
+                Title = "Game",
+                Contents = "Witcher 3",
+                Modified_at = DateTime.Now,
+                UserId = 1
+            };
+            var postStringContent = new StringContent(JsonConvert.SerializeObject(post1), Encoding.UTF8, "application/json");
+            var postResponse = await _httpClient.PostAsync("Posts", postStringContent);
+
+            Post post2 = new Post
+            {
+                Id = 1,
+                Title = "Game",
+                Contents = "Witcher 4",
+                Modified_at = DateTime.Now,
+                UserId = 1
+            };
+            var post2StringContent = new StringContent(JsonConvert.SerializeObject(post2), Encoding.UTF8, "application/json");
+            var post2Response = await _httpClient.PostAsync("Posts", post2StringContent);
+
+            var delete = await _httpClient.DeleteAsync("Users/1");
+            var result = await delete.Content.ReadAsStringAsync();
+            Assert.Equal("User with the id 1 deleted successfully", result);
+
+            var get = await _httpClient.GetAsync("Posts");
+            var getResult = await get.Content.ReadAsStringAsync();
+            Assert.Equal(0, getResult.Split("{").Length - 1);
+        }
+
+        [Fact]
         public async Task TestUpdate_ShouldReturnNotFound()
         {
             User user = new User
