@@ -9,6 +9,7 @@ namespace Blog.Controllers
     public class UsersController : Controller
     {
         private readonly ApplicationDbContext _context;
+        const string entityNonExistingError = "80131500";
 
         public UsersController(ApplicationDbContext context)
         {
@@ -49,9 +50,9 @@ namespace Blog.Controllers
                 _context.SaveChanges();
                 return Created("user/" + userToAdd.Id, userToAdd);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                return NotFound(e.InnerException.Message);
+                return NotFound("An unexpected error has occured");
             }
         }
 
@@ -91,11 +92,11 @@ namespace Blog.Controllers
             }
             catch (Exception e)
             {
-                if (e.HResult == -2146233088)
+                if (e.HResult.ToString("x") == entityNonExistingError)
                 {
                     return NotFound("User with the id " + id + " does not exist");
                 }
-                return NotFound(e.InnerException.Message);
+                return NotFound("An unexpected error has occured");
             }
         }
     }

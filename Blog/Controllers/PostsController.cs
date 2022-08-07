@@ -9,6 +9,8 @@ namespace Blog.Controllers
     public class PostsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        const string entityNonExistingError = "80131500";
+        const string foreignKeyEntityNonExistingError = "80131904";
 
         public PostsController(ApplicationDbContext context)
         {
@@ -50,11 +52,11 @@ namespace Blog.Controllers
             }
             catch (Exception e)
             {
-                if (e.HResult == -2146233088)
+                if (e.HResult.ToString("x") == entityNonExistingError)
                 {
                     return NotFound("User " + post.UserId + " does not exist");
                 }
-                return NotFound(e.InnerException.Message);
+                return NotFound("An unexpected error has occured");
             }
         }
 
@@ -94,15 +96,15 @@ namespace Blog.Controllers
             }
             catch (Exception e)
             {
-                if (e.HResult == -2146233088 && e.InnerException == null)
+                if (e.HResult.ToString("x") == entityNonExistingError && e.InnerException == null)
                 {
                     return NotFound("Post with the id " + id + " does not exist");
                 }
-                if (e.InnerException.HResult == -2146232060)
+                if (e.InnerException.HResult.ToString("x") == foreignKeyEntityNonExistingError)
                 {
                     return NotFound("User " + post.UserId + " does not exist");
                 }
-                return NotFound(e.InnerException.Message);
+                return NotFound("An unexpected error has occured");
             }
         }
     }
